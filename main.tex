@@ -1,0 +1,332 @@
+% [Overleaf] https://www.overleaf.com/read/vstntrsxvkys
+% [YouTube] https://youtu.be/w_D1qMHQm48
+% [GitHub] https://github.com/nobucshirai/infona2020_slide_04
+\documentclass[dvipdfmx,aspectratio=169,20pt]{beamer}
+\usepackage{bxdpx-beamer}
+
+% Beamer theme
+\usetheme{Boadilla}
+
+%%%%% JAPANESE FONT SETTINGS %%%%%
+\usepackage[utf8]{inputenc}
+\usepackage{pxjahyper}
+\renewcommand{\kanjifamilydefault}{\gtdefault} % for Gothic Japanese fonts
+\newcommand{\myfontsetting}[3]{{\fontsize{#1}{#2}\selectfont #3}}
+\usepackage[deluxe,uplatex]{otf} % needed to use super bold Japanese fonts
+\usepackage[unicode,noto-otc]{pxchfon} % needed to use super bold Japanese fonts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%% SETTINGS FOR MATH SYMBOLS %%%%%
+\usepackage{amsmath,amssymb}
+\usepackage{bm}
+%\usepackage{graphicx}
+\usepackage{latexsym}
+\usefonttheme{professionalfonts} % use Serif fonts for equations
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fancybox,ascmac}
+\usepackage{url}
+\usepackage[many]{tcolorbox}
+
+%%%%% ALGORITHM SETTING %%%%%
+\usepackage{algorithm}
+\usepackage[noend]{algorithmic}
+\algsetup{linenosize=\color{fg!50}\fontsize{8pt}{8pt}\selectfont}
+\renewcommand\algorithmicdo{\bfseries :}
+\renewcommand\algorithmicthen{\bfseries :}
+\renewcommand\algorithmicrequire{\textbf{Input:}}
+\renewcommand\algorithmicensure{\textbf{Output:}}
+\renewcommand{\algorithmicprint}{\textbf{break}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{myblue1}{RGB}{45,130,200}
+\definecolor{myblue2}{RGB}{26,89,142}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor*{structure}{fg=myblue1,bg=blue}
+\setbeamercolor{block title}{fg=myblue1!50!black}
+\setbeamercolor*{block title example}{fg=white,bg=myblue2}
+\setbeamercolor*{palette primary}{use=structure,fg=white,bg=structure.fg}
+\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=structure.fg!75!black}
+\setbeamercolor*{palette tertiary}{use=structure,fg=white,bg=structure.fg!50!black}
+\setbeamercolor*{palette quaternary}{fg=black,bg=myblue1}
+
+\setbeamerfont{alerted text}{series=\bfseries}
+\setbeamerfont{section in toc}{series=\mdseries}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{title}{size=\LARGE,series=\bfseries}
+\setbeamerfont{date}{size=\small}
+
+\setbeamertemplate{block title}[shadow=false]
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+%%%%% BEAMER FOOTLINE SETTINGS %%%%%%
+\setbeamertemplate{footline}[frame number]{}
+\setbeamerfont{footline}{size=\bf\footnotesize\small}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%% BEAMER ITEM SETTINGS %%%%%
+\setbeamertemplate{itemize item}[circle]
+\setbeamertemplate{itemize subitem}[triangle]
+\setbeamertemplate{enumerate item}[circle]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{[問題] I\hspace{-.01em}I-B}
+%%%%% START_TAG B %%%%%
+%\noindent{\bf I\hspace{-.01em}I-B.}
+$\sqrt{x+1}$ を $x=0$ でテイラー展開して得られた2次の多項式を $p_2(x)$ と置く。
+$x\in [0,1]$ の範囲のすべての $x$ に対して
+\begin{equation*}
+    |\sqrt{x+1} - p_2(x)|\le \frac{1}{16}
+\end{equation*}
+となることを示せ。
+%%%%% END_TAG B %%%%%
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{[略解] I\hspace{-.01em}I-B}
+{\bf テイラーの定理}より $\sqrt{x+1}$ は $p_2(x)$ と{\bf ラグランジュの剰余項} $R_2(x)$ を用いて $\sqrt{x+1} = p_2(x)+R_2(x)$ と表される。
+\vspace{0.5cm}
+
+ここで $|R_2(x)|=\frac{|x|^{3}}{3!}\cdot \frac{3}{8}|1+c_x|^{-\frac{5}{2}}$ $(c_x\in [0,1])$ である。
+\vspace{0.5cm}
+
+$|R_2(x)|\le \frac{1}{16}$ より不等式が示された。
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%タイトルページ
+
+\title{求根アルゴリズム (1)}
+\titlegraphic{\vspace{-7mm}\flushright\includegraphics[width=1.8cm,height=1.8cm]{hattari_kun_good_org.eps}}
+
+\setbeamertemplate{title page}{%
+    \begin{flushright}
+        \usebeamercolor[fg]{titlegraphic}\inserttitlegraphic
+    \end{flushright}
+    \vspace{-0.6cm}
+    \hspace{1.5cm}{\selectfont\usebeamerfont{subtitle} \usebeamercolor[fg]{subtitle} [\href{https://youtu.be/w_D1qMHQm48}{数値解析 第3回}] \par}
+    \vspace{0.5cm}
+    %\vspace{2.5em}
+    {\centering\usebeamerfont{title} \usebeamercolor[fg]{title} \inserttitle \par}
+    \vspace{0.5cm}
+    \begin{center}
+        式の根っこを確実に追い詰める
+    \end{center}
+}
+
+\date[\todey]{}
+
+\frame{\titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{求根アルゴリズム {\small (Root-finding algorithm)}}
+\begin{itemize}
+    \setlength{\itemsep}{0.5cm}
+    \item 関数 $f(x)=0$ となるような $x$ を $f(x)$ の{\bf 根} (root) と呼ぶ
+    \item 求根アルゴリズムは $f(x)$ と $x$ の範囲が与えられた時にその範囲内の $f(x)$ の根を見つけるアルゴリズム
+    \begin{itemize}
+        \item $f(x)$ が非線形方程式 (2次以上の方程式や初等関数を含む方程式など) の場合に特に有用
+    \end{itemize}
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{2分法 {\normalsize (求根アルゴリズム その1)}}
+\begin{itemize}
+    %\setlength{\itemsep}{0.5cm}
+    \item $f(x)$ が計算できればOK
+    \item $f(a)f(b)<0$ を満たす $a,b$ が初期値として必要
+    \item 解が存在している範囲を確実に狭めていく事ができる
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{ニュートン法 {\normalsize (求根アルゴリズム その2)}}
+\begin{itemize}
+    %\setlength{\itemsep}{0.5cm}
+    \item 反復法
+    \begin{itemize}
+        \item $x^{(k+1)}=\varphi(x^{(k)})$ の形の漸化式を反復する
+    \end{itemize}
+    \item $f^{\prime}(x)$ を計算する必要あり 
+    \item 解への収束が爆速 ({\bf 2次収束})
+    \begin{itemize}
+        \item 但し初期値の選び方によっては収束しない
+    \end{itemize}
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+%%%%% START_TAG A %%%%%
+%\noindent{\bf [I\hspace{-.1em}I\hspace{-.1em}I. 求根アルゴリズム (1)]}%RETURN
+%\noindent{\bf I\hspace{-.1em}I\hspace{-.1em}I-A.}
+\frametitle{[問題] I\hspace{-.1em}I\hspace{-.1em}I-A (1)}
+\myfontsetting{18pt}{20pt}{
+$x$ の多項式 $f(x)=x^6-7x^4+11x^3-10$ が与えられた時、$x\in [0,2]$ の範囲にある $f(x)$ の根を2分法を用いて求める場合を考える。解の存在する範囲を $10^{-8}$ 以下に限定するには2分法の繰り返し操作を最低何回行えば良いか答えよ。%\\
+}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{[問題] I\hspace{-.1em}I\hspace{-.1em}I-A (2)}
+\myfontsetting{18pt}{20pt}{
+2分法により $f(x)$ の根を求めるプログラムを作成して問1で求めた回数繰り返し、繰り返し操作後の解の存在する $x$ の区間の両端の値を有効数字10進11桁以降を切り捨てて求めよ。またその区間の両端の値の平均値を求め根の近似値として有効数字10進11桁以降を切り捨てて求めよ。
+}\\
+\myfontsetting{12pt}{14pt}{
+作成したプログラムも提出すること。プログラミング言語は問わない。
+}
+%%%%% END_TAG A %%%%%
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{[略解] I\hspace{-.1em}I\hspace{-.1em}I-A (1)}
+\vspace{-0.5cm}
+\begin{eqnarray*}
+    &&\inf \left\{n\in \mathbb{N}\  \middle| \ 2\cdot \frac{1}{2^n}\le 10^{-8} \right\}\\
+    &=& \inf \left\{n\in \mathbb{N}\  \middle| \ n \ge 8\log_2 10 +1 \right\}\\
+    &=& \lceil 8\log_2 10 +1 \rceil= 28
+\end{eqnarray*}
+従って28回。
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{[略解] I\hspace{-.1em}I\hspace{-.1em}I-A (2)}
+%\vspace{-0.5cm}
+解の存在する区間幅
+
+[1.357271470, 1.357271477]
+
+\vspace{0.5cm}
+根の近似値 1.357271473
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{{\large [手法] 式の根っこを確実に追い詰める}}
+    \begin{block}{{\bf\small 2分法} \myfontsetting{13pt}{18pt}{(Bisection method)}}
+        \myfontsetting{15pt}{18pt}{
+        \begin{algorithmic}[1]
+            \REQUIRE $f(x), a, b, \delta$ \myfontsetting{13pt}{18pt}{$(a<b, f(a)\times f(b)<0$, $f(x)$ は $x\in [a,b] \textrm{で連続})$}
+            \ENSURE $a,b$
+            \REPEAT
+            \STATE $c \leftarrow (a+b)/2$
+            \IF{$f(a)\times f(c)>0$}
+            \STATE $a \leftarrow c$
+            \ELSE
+            \STATE $b \leftarrow c$
+            \ENDIF
+            \UNTIL{$|b-a|\le \delta$}
+        \end{algorithmic}
+        }
+    \end{block}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{{\large [手法解説]}}
+\begin{block}{{\bf 2分法} {\small (Bisection method)}}
+{\small 与えられた初期区間の両端と中央点の $f(x)$ の符号を頼りに区間の2分を繰り返し、区間内の根のうちの1つの近似解を求める手法}
+\end{block}
+\begin{itemize}
+    %\setlength{\itemsep}{0.5cm}
+    \item 解が存在している範囲を確実に狭めていく事ができる安定した手法
+    \item {\bf 2分探索} (Binary search) の数値版
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{{\large [補足] 誤差は定義して使おう}}
+\begin{itemize}
+    %\setlength{\itemsep}{0.5cm}
+    \item {\bf 誤差}の定義は2種類ある
+    \begin{itemize}
+        \item[] \hspace{-1cm} \myfontsetting{15pt}{15pt}{{\color{myblue1}定義1 \footnotemark} $\alpha-\hat{\alpha}$ (真値 $\alpha$ から近似値 $\hat{\alpha}$ を引いたもの)}
+        \item[] \hspace{-1cm} \myfontsetting{15pt}{15pt}{{\color{myblue1}定義2 \footnotemark} $\hat{\alpha}-\alpha$ (近似値 $\hat{\alpha}$ から真値 $\alpha$ を引いたもの)}
+        \item \myfontsetting{15pt}{15pt}{絶対誤差・相対誤差は誤差の定義 (定義1 or 定義2) に寄らない}
+        \item \myfontsetting{15pt}{15pt}{誤差は真値がわからないと計算できない}
+    \end{itemize}
+\end{itemize}
+
+\addtocounter{footnote}{-2}
+\stepcounter{footnote}\footnotetext{\myfontsetting{8pt}{10pt}{J.F. Epperson, ``Introduction to Numerical Methods and Analysis Second Edition", Willy p.~14}}
+\stepcounter{footnote}\footnotetext{\myfontsetting{10pt}{12pt}{櫻井鉄也『数値の処理と数値解析』 (放送大学教材) p.~36}}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{{\large [補足] 近似値の旨さの指標 残差}}
+\begin{itemize}
+    \setlength{\itemsep}{0.2cm}
+    \item 誤差の代わりに近似値の旨さを測る指標として使えるのが{\bf 残差} (residual)
+    \vspace{0.2cm}
+    \begin{itemize}
+        \setlength{\itemsep}{0.2cm}
+        \item [問題設定] 関数 $f(x)$ の根 $\xi$ を求める問題で近似値 $\hat{\xi}$ を得た場合 ($f(\xi)=0$)
+        \item [定義] $|f(\hat{\xi})|$
+        \item [考え方] \myfontsetting{16pt}{16pt}{残差が小さいほど良い近似であると考えられる}
+        \item [使い方] \myfontsetting{16pt}{16pt}{残差を計算して監視しておけば精度が改善しているかを測る事ができる}
+    \end{itemize}
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{{\large [手法] ホーナー法}}
+    \begin{block}{{\bf\small ホーナー法} \myfontsetting{13pt}{18pt}{(Horner's rule)}}
+        \myfontsetting{15pt}{18pt}{
+        \begin{algorithmic}[1]
+            \REQUIRE $f(x), \alpha$
+            \ENSURE $f(\alpha)$
+            \STATE $f\leftarrow a_n$
+            \FOR{$k=n-1,n-2,\dots,0$}
+            \STATE $f_0 \leftarrow f\times \alpha + a_k$
+            \ENDFOR
+        \end{algorithmic}
+        }
+    \end{block}
+    \begin{itemize}
+        \item \myfontsetting{15pt}{18pt}{$n$ 次多項式 $f(x)=a_n x^n + a_{n-1}x^{n-1} + \cdots + a_0$ が与えられた時、具体的な数値 $\alpha$ を代入した $f(\alpha)$ を掛け算の回数を減らして計算する方法
+        }
+    \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{{\large [道具] 計算機でグラフを描こう}}
+    \begin{itemize}
+        \setlength{\itemsep}{0.5cm}
+        \item 生データを目視で点検
+        \begin{itemize}
+            \item 変な文字や数値は入っていないか？
+            \item 行や列で数値がズレていない？
+        \end{itemize}
+        \item 関数の概形をつかむ
+        \begin{itemize}
+            \item 与えられた式をプロットしてみる
+            \item 表示する範囲を変えながら感覚をつかむ
+        \end{itemize}
+        \item 数値の変化をグラフにして眺める
+    \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+%%%%% PASTE_START_TAG B %%%%%
+%\noindent{\bf I\hspace{-.1em}I\hspace{-.1em}I-B.}
+\frametitle{[問題] I\hspace{-.1em}I\hspace{-.1em}I-B (1)}
+\myfontsetting{18pt}{20pt}{
+$f(x)=2-e^{x}$ が与えられた時、$x\in [0,1]$ の範囲にある $f(x)$ の根を2分法を用いて求める場合を考える。解の存在する範囲を $10^{-8}$ 以下に限定するには2分法の繰り返し操作を最低何回行えば良いか答えよ。%\\
+}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{[問題] I\hspace{-.1em}I\hspace{-.1em}I-B (2)}
+\myfontsetting{18pt}{20pt}{
+2分法により $f(x)$ の根を求めるプログラムを作成して問1で求めた回数繰り返し、繰り返し操作後の解の存在する $x$ の区間の両端の値を有効数字10進11桁以降を切り捨てて求めよ。またその区間の両端の値の平均値を求め根の近似値として有効数字10進11桁以降を切り捨てて求めよ。
+}\\
+\myfontsetting{12pt}{14pt}{
+作成したプログラムも提出すること。プログラミング言語は問わない。
+}
+%%%%% PASTE_END_TAG B %%%%%
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+
