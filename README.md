@@ -9,15 +9,18 @@
 ## ファイル説明
 
 - `infona2020_slide_03.tex`
-    - BEAMERクラスを使ったスライドの $\LaTeX$ コード
+    - BEAMERクラスを使ったスライドのLaTeXコード
 - `infona2020_slide_03.pdf`
-    - 上記 $\LaTeX$ コードから生成したスライドのPDFファイル
-    - $\LaTeX$ コードおよびPDFファイルはOverleafで作成 [[Overleafプロジェクト](https://www.overleaf.com/read/vstntrsxvkys)]
+    - 上記LaTeXコードから生成したスライドのPDFファイル
+    - LaTeXコードおよびPDFファイルはOverleafで作成 [[Overleafプロジェクト](https://www.overleaf.com/read/vstntrsxvkys)]
 - `report_03.pdf`
-    - 動画内で使用している第1回レポートのPDFファイル
+    - 動画内で使用している第3回レポートのPDFファイル
     - 前半分のページは授業で穴埋めする前の状態
     - 後半分のページは穴埋め部分を埋めた状態
-    - 書き込み前の $\LaTeX$ コードはOverleafで作成 [[Overleafプロジェクト](https://www.overleaf.com/read/njkwvgqfvgtb)]
+    - 書き込み前のLaTeXコードはOverleafで作成 [[Overleafプロジェクト](https://www.overleaf.com/read/njkwvgqfvgtb)]
+- `report_III_A.ipynb`
+    - [![Open in Google Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1g7hSxSkWUbnlPgiaGKlkzcUxIZaDczbt?usp=sharing)
+    - 授業動画で示したコードを含むJupyterノートブックファイル
 
 ## 誤植・間違いの報告
 
@@ -26,7 +29,7 @@
 1. LaTeXソースを修正しPullリクエストを送る
 2. Discussionsからコメントを送る
 
-誤植・間違いかどうか定かでない場合や修正方法が複数考えられる場合などはDiscussionsをご使用下さい。
+誤植・間違いかどうか定かでない場合や修正方法が複数考えられる場合などはGitHubのDiscussions機能をご使用下さい。
 またコメントを送る際はソースコードの行数やスライドのページ番号などを示して頂くとありがたいです。
 
 ## 講義情報
@@ -36,3 +39,4 @@
 - 実施期間: 2020年度後期(2020年10月～2021年2月)
 - 対象:  三重大学工学部情報工学科3年生
 - 日時 (第3回): 2020/10/15 (木) 13時—14時半
+
